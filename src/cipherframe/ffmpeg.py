@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -14,12 +15,28 @@ from cipherframe.errors import FFmpegNotFoundError
 LOGGER = logging.getLogger(__name__)
 
 
+def _bundled_ffmpeg_candidates() -> list[Path]:
+    package_root = Path(__file__).resolve().parents[2]
+    executable_name = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
+    return [
+        Path.cwd() / "bin" / executable_name,
+        package_root / "bin" / executable_name,
+        package_root.parent / "bin" / executable_name,
+    ]
+
+
 def require_ffmpeg() -> str:
     """Return the FFmpeg executable path or raise a clear error."""
 
+    for candidate in _bundled_ffmpeg_candidates():
+        if candidate.is_file():
+            LOGGER.debug("Using bundled FFmpeg: %s", candidate)
+            return str(candidate)
+
     executable = shutil.which("ffmpeg")
     if executable is None:
-        raise FFmpegNotFoundError("FFmpeg was not found in PATH.")
+        raise FFmpegNotFoundError("FFmpeg was not found in ./bin or PATH.")
+    LOGGER.debug("Using FFmpeg from PATH: %s", executable)
     return executable
 
 

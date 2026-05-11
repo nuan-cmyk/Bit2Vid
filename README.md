@@ -24,13 +24,19 @@ error-correction parity before being written to video frames.
 ## Requirements
 
 - Python 3.10+
-- FFmpeg available in `PATH`
+- FFmpeg bundled in `bin/` or available in `PATH`
 
 Install the package and dependencies:
 
 ```powershell
 python -m pip install -e .
 ```
+
+Bit2Vid looks for FFmpeg in this order:
+
+1. `./bin/ffmpeg.exe` from the current project directory.
+2. `bin/ffmpeg.exe` next to the installed source package.
+3. `ffmpeg` from the system `PATH`.
 
 ## Usage
 
