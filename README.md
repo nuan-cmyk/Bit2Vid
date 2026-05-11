@@ -1,3 +1,5 @@
+![Bit2Vid vault animation](./vault.gif)
+
 # Bit2Vid
 
 Bit2Vid is a command-line utility for converting arbitrary binary files into resilient
