@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69", "wheel"]
+requires = ["setuptools>=69", "wheel", "build"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,15 +22,36 @@ dependencies = [
 dev = [
   "pytest>=8.0",
   "ruff>=0.4",
+  "build>=1.0",
+  "twine>=4.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/bit2vid/bit2vid"
+Documentation = "https://github.com/bit2vid/bit2vid#readme"
+Repository = "https://github.com/bit2vid/bit2vid.git"
+Issues = "https://github.com/bit2vid/bit2vid/issues"
+
 [project.scripts]
-bit2vid = "cipherframe.cli:main"
-cipherframe = "cipherframe.cli:main"
+bit2vid = "bit2vid.cli:main"
+
+[tool.setuptools]
+packages = ["bit2vid"]
+
+[tool.setuptools.package-dir]
+"" = "src"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["bit2vid*"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-width = 4
