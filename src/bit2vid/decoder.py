@@ -32,7 +32,9 @@ class VideoDecoder:
         self.width = width
         self.height = height
 
-    def decode_file(self, input_path: Path, output_path: Path, password: str, ffmpeg_path: str | None = None) -> None:
+    def decode_file(
+        self, input_path: Path, output_path: Path, password: str, ffmpeg_path: str | None = None
+    ) -> None:
         """Decode an MP4 container to the original binary output."""
 
         if not input_path.is_file():
@@ -85,6 +87,6 @@ class VideoDecoder:
         settings.validate()
         header_bits = np.concatenate([frame_to_bits(frame, settings) for frame in frames])
         header_len = TRANSPORT_HEADER_REPEATS * TRANSPORT_HEADER_SIZE
-        header_bytes = bits_to_bytes(header_bits[:header_len * 8], header_len)
+        header_bytes = bits_to_bytes(header_bits[: header_len * 8], header_len)
         recovered_settings, ecc_symbols, encoded_len = parse_transport_header(header_bytes)
         return recovered_settings, ecc_symbols, encoded_len, header_bits

@@ -47,11 +47,11 @@ def test_crypto_ecc_and_frame_roundtrip() -> None:
 def test_wrong_password() -> None:
     """Test that wrong password raises CryptoError."""
     from bit2vid.errors import CryptoError
-    
+
     password = "correct"
     plain = b"secret data"
     encrypted = encrypt_payload(plain, password, 10_000)
-    
+
     try:
         decrypt_payload(encrypted, "wrong")
         assert False, "Should have raised CryptoError"
@@ -62,15 +62,15 @@ def test_wrong_password() -> None:
 def test_corrupted_ecc() -> None:
     """Test that corrupted ECC data can be partially recovered."""
     from bit2vid.errors import PayloadFormatError
-    
+
     plain = b"test data for corruption"
     ecc = ReedSolomonLayer(32)
     protected = bytearray(ecc.encode(plain))
-    
+
     # Corrupt some bytes beyond ECC capability - should fail
     for i in range(_ECC_HEADER_STRUCT.size + 200, _ECC_HEADER_STRUCT.size + 210):
         protected[i] ^= 0xFF
-    
+
     try:
         ecc.decode(bytes(protected))
         # May or may not fail depending on corruption pattern

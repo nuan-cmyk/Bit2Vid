@@ -16,12 +16,14 @@ from bit2vid.config import (
     DEFAULT_HEIGHT,
     DEFAULT_PBKDF2_ITERATIONS,
     DEFAULT_WIDTH,
+    TRANSPORT_HEADER_REPEATS,
+    TRANSPORT_HEADER_SIZE,
     VideoSettings,
 )
+from bit2vid.ecc import ReedSolomonLayer, _ECC_HEADER_STRUCT
 from bit2vid.decoder import VideoDecoder
 from bit2vid.encoder import VideoEncoder
 from bit2vid.errors import Bit2VidError
-from bit2vid.ecc import ReedSolomonLayer
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -30,7 +32,9 @@ def build_parser() -> argparse.ArgumentParser:
         description="Encrypt binary files into resilient MP4 video frames and recover them.",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging.")
-    parser.add_argument("--ffmpeg", help="Path to FFmpeg executable (optional, searches PATH if omitted).")
+    parser.add_argument(
+        "--ffmpeg", help="Path to FFmpeg executable (optional, searches PATH if omitted)."
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     encode = subparsers.add_parser("encode", help="Pack a binary file into an MP4 video.")
@@ -39,7 +43,9 @@ def build_parser() -> argparse.ArgumentParser:
     encode.add_argument("--password", help="Password. Omit to prompt securely.")
     encode.add_argument("--width", type=int, default=DEFAULT_WIDTH)
     encode.add_argument("--height", type=int, default=DEFAULT_HEIGHT)
-    encode.add_argument("--block-size", type=int, default=DEFAULT_BLOCK_SIZE, choices=[8, 10, 12, 16, 20])
+    encode.add_argument(
+        "--block-size", type=int, default=DEFAULT_BLOCK_SIZE, choices=[8, 10, 12, 16, 20]
+    )
     encode.add_argument("--fps", type=int, default=DEFAULT_FPS)
     encode.add_argument("--crf", type=int, default=DEFAULT_CRF)
     encode.add_argument("--preset", default="slow")
@@ -53,11 +59,15 @@ def build_parser() -> argparse.ArgumentParser:
     decode.add_argument("--width", type=int, default=DEFAULT_WIDTH)
     decode.add_argument("--height", type=int, default=DEFAULT_HEIGHT)
 
-    estimate = subparsers.add_parser("estimate", help="Estimate video size for a given binary file.")
+    estimate = subparsers.add_parser(
+        "estimate", help="Estimate video size for a given binary file."
+    )
     estimate.add_argument("input", type=Path, help="Input binary file.")
     estimate.add_argument("--width", type=int, default=DEFAULT_WIDTH)
     estimate.add_argument("--height", type=int, default=DEFAULT_HEIGHT)
-    estimate.add_argument("--block-size", type=int, default=DEFAULT_BLOCK_SIZE, choices=[8, 10, 12, 16, 20])
+    estimate.add_argument(
+        "--block-size", type=int, default=DEFAULT_BLOCK_SIZE, choices=[8, 10, 12, 16, 20]
+    )
     estimate.add_argument("--fps", type=int, default=DEFAULT_FPS)
     estimate.add_argument("--ecc-symbols", type=int, default=DEFAULT_ECC_SYMBOLS)
 
@@ -133,44 +143,47 @@ def main(argv: list[str] | None = None) -> int:
                 fps=args.fps,
             )
             settings.validate()
-            
+
             file_size = args.input.stat().st_size
             ecc = ReedSolomonLayer(args.ecc_symbols)
-            
+
             # Estimate encrypted payload size (includes crypto header + ciphertext)
             crypto_header_size = 128
             estimated_encrypted = crypto_header_size + file_size
-            
+
             # Calculate ECC protected size
             num_chunks = (estimated_encrypted + ecc.data_symbols - 1) // ecc.data_symbols
             codeword_size = ecc.data_symbols + ecc.ecc_symbols
-            ecc_protected_size = ecc._ECC_HEADER_STRUCT.size + num_chunks * codeword_size
-            
+            ecc_protected_size = _ECC_HEADER_STRUCT.size + num_chunks * codeword_size
+
             # Calculate transport header + payload size
-            from bit2vid.config import TRANSPORT_HEADER_REPEATS, TRANSPORT_HEADER_SIZE
             transport_header_size = TRANSPORT_HEADER_REPEATS * TRANSPORT_HEADER_SIZE
             total_bits = (transport_header_size + ecc_protected_size) * 8
-            
+
             # Calculate frame requirements
             bits_per_frame = settings.blocks_x * settings.blocks_y
             frame_count = (total_bits + bits_per_frame - 1) // bits_per_frame
-            
+
             # Estimate video duration and size
             duration_seconds = frame_count / settings.fps
-            
+
             print(f"\n=== Bit2Vid Estimate ===")
             print(f"Input file size:           {file_size:,} bytes")
             print(f"Crypto overhead:           {crypto_header_size} bytes")
             print(f"Encrypted size:            {estimated_encrypted:,} bytes")
             print(f"ECC redundancy:            {ecc.redundancy_ratio:.1%}")
             print(f"ECC protected size:        {ecc_protected_size:,} bytes")
-            print(f"Transport + payload:       {transport_header_size + ecc_protected_size:,} bytes")
+            print(
+                f"Transport + payload:       {transport_header_size + ecc_protected_size:,} bytes"
+            )
             print(f"Total bits:                {total_bits:,} bits")
             print(f"Video resolution:          {settings.width}x{settings.height}")
             print(f"Bits per frame:            {bits_per_frame}")
             print(f"Required frames:           {frame_count:,}")
             print(f"Video duration @ {settings.fps} FPS:   {duration_seconds:.1f} seconds")
-            print(f"Video bitrate estimate:    ~{settings.crf} CRF (variable, depends on compression)")
+            print(
+                f"Video bitrate estimate:    ~{settings.crf} CRF (variable, depends on compression)"
+            )
             print()
 
         else:

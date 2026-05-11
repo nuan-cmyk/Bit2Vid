@@ -35,9 +35,6 @@ Issues = "https://github.com/bit2vid/bit2vid/issues"
 [project.scripts]
 bit2vid = "bit2vid.cli:main"
 
-[tool.setuptools]
-packages = ["bit2vid"]
-
 [tool.setuptools.package-dir]
 "" = "src"
 
@@ -54,4 +51,4 @@ select = ["E", "F", "W", "I", "N"]
 
 [tool.ruff.format]
 quote-style = "double"
-indent-width = 4
+indent-style = "space"

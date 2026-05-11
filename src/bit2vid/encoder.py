@@ -30,7 +30,9 @@ class VideoEncoder:
         self.ecc = ReedSolomonLayer(ecc_symbols)
         self.pbkdf2_iterations = pbkdf2_iterations
 
-    def encode_file(self, input_path: Path, output_path: Path, password: str, ffmpeg_path: str | None = None) -> None:
+    def encode_file(
+        self, input_path: Path, output_path: Path, password: str, ffmpeg_path: str | None = None
+    ) -> None:
         """Encode an input file to an MP4 container."""
 
         if not input_path.is_file():
@@ -43,7 +45,9 @@ class VideoEncoder:
         LOGGER.info("Encrypting %d bytes with AES-256-GCM.", len(plain))
         encrypted = encrypt_payload(plain, password, self.pbkdf2_iterations)
         protected = self.ecc.encode(encrypted)
-        transport_header = build_transport_header(self.settings, self.ecc.ecc_symbols, len(protected))
+        transport_header = build_transport_header(
+            self.settings, self.ecc.ecc_symbols, len(protected)
+        )
         bitstream = bytes_to_bits(transport_header + protected)
         frames = bits_to_frames(bitstream, self.settings)
 

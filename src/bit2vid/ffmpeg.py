@@ -18,17 +18,19 @@ LOGGER = logging.getLogger(__name__)
 def _bundled_ffmpeg_candidates(ffmpeg_path: str | None = None) -> list[Path]:
     """Return FFmpeg candidates, with optional custom path first."""
     candidates: list[Path] = []
-    
+
     if ffmpeg_path:
         candidates.append(Path(ffmpeg_path))
-    
+
     package_root = Path(__file__).resolve().parents[2]
     executable_name = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
-    candidates.extend([
-        Path.cwd() / "bin" / executable_name,
-        package_root / "bin" / executable_name,
-        package_root.parent / "bin" / executable_name,
-    ])
+    candidates.extend(
+        [
+            Path.cwd() / "bin" / executable_name,
+            package_root / "bin" / executable_name,
+            package_root.parent / "bin" / executable_name,
+        ]
+    )
     return candidates
 
 
@@ -47,7 +49,9 @@ def require_ffmpeg(ffmpeg_path: str | None = None) -> str:
     return executable
 
 
-def start_encoder(output_path: Path, settings: VideoSettings, ffmpeg_path: str | None = None) -> subprocess.Popen[bytes]:
+def start_encoder(
+    output_path: Path, settings: VideoSettings, ffmpeg_path: str | None = None
+) -> subprocess.Popen[bytes]:
     """Start FFmpeg for raw grayscale frame input."""
 
     executable = require_ffmpeg(ffmpeg_path)
@@ -76,7 +80,9 @@ def start_encoder(output_path: Path, settings: VideoSettings, ffmpeg_path: str |
         str(output_path),
     ]
     LOGGER.debug("Starting FFmpeg encoder: %s", " ".join(command))
-    return subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return subprocess.Popen(
+        command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
 
 
 def start_decoder(input_path: Path, ffmpeg_path: str | None = None) -> subprocess.Popen[bytes]:
@@ -94,7 +100,9 @@ def start_decoder(input_path: Path, ffmpeg_path: str | None = None) -> subproces
         "pipe:1",
     ]
     LOGGER.debug("Starting FFmpeg decoder: %s", " ".join(command))
-    return subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return subprocess.Popen(
+        command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
 
 
 def finish_process(process: subprocess.Popen[bytes], stream: BinaryIO | None = None) -> None:

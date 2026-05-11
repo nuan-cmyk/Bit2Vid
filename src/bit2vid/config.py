@@ -51,8 +51,12 @@ class VideoSettings:
     def validate(self) -> None:
         """Validate configuration constraints."""
         if self.width % self.block_size != 0:
-            raise ValueError(f"width ({self.width}) must be divisible by block_size ({self.block_size})")
+            raise ValueError(
+                f"width ({self.width}) must be divisible by block_size ({self.block_size})"
+            )
         if self.height % self.block_size != 0:
-            raise ValueError(f"height ({self.height}) must be divisible by block_size ({self.block_size})")
+            raise ValueError(
+                f"height ({self.height}) must be divisible by block_size ({self.block_size})"
+            )
         if not 1 <= self.fps <= 60:
             raise ValueError(f"fps must be between 1 and 60, got {self.fps}")
