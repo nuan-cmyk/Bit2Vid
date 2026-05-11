@@ -25,7 +25,7 @@ from cipherframe.errors import CipherFrameError
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="cipherframe",
+        prog="bit2vid",
         description="Encrypt binary files into resilient MP4 video frames and recover them.",
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable debug logging.")
