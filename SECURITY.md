@@ -49,7 +49,7 @@ However, it **does not provide cryptographic authentication** for the unencrypte
 
 ## Reported Vulnerabilities
 
-If you discover a security vulnerability, please **do not** open a public issue. Instead, email [security contact - to be added] with:
+If you discover a security vulnerability, please **do not** open a public issue. Instead, email ctozaa51@gmail.com with:
 - Description of the issue
 - Steps to reproduce
 - Potential impact
