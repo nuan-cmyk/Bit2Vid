@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cipherframe-vault"
+version = "0.1.0"
+description = "Encrypt and encode arbitrary binary files into resilient MP4 video frames."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "CipherFrame Vault Contributors" }]
+keywords = ["ffmpeg", "mp4", "aes-gcm", "reed-solomon", "steganography", "backup"]
+dependencies = [
+  "numpy>=1.24",
+  "pycryptodome>=3.20",
+  "reedsolo>=1.7",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.4",
+]
+
+[project.scripts]
+cipherframe = "cipherframe.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
