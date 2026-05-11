@@ -20,8 +20,8 @@ from bit2vid.config import (
     TRANSPORT_HEADER_SIZE,
     VideoSettings,
 )
-from bit2vid.ecc import ReedSolomonLayer, _ECC_HEADER_STRUCT
 from bit2vid.decoder import VideoDecoder
+from bit2vid.ecc import _ECC_HEADER_STRUCT, ReedSolomonLayer
 from bit2vid.encoder import VideoEncoder
 from bit2vid.errors import Bit2VidError
 

@@ -11,7 +11,7 @@ from bit2vid.config import DEFAULT_PBKDF2_ITERATIONS, VideoSettings
 from bit2vid.crypto import encrypt_payload
 from bit2vid.ecc import ReedSolomonLayer
 from bit2vid.ffmpeg import finish_process, start_encoder
-from bit2vid.transport import bits_to_frames, bytes_to_bits, build_transport_header
+from bit2vid.transport import bits_to_frames, build_transport_header, bytes_to_bits
 
 LOGGER = logging.getLogger(__name__)
 

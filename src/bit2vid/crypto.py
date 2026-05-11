@@ -8,8 +8,8 @@ import secrets
 import struct
 
 from Crypto.Cipher import AES
-from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Hash import SHA256
+from Crypto.Protocol.KDF import PBKDF2
 
 from bit2vid.config import MAGIC, PAYLOAD_HEADER_SIZE, VERSION
 from bit2vid.errors import CryptoError, PayloadFormatError

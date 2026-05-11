@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-
 MAGIC = b"CFVLT001"
 TRANSPORT_MAGIC = b"CFVID001"
 VERSION = 1

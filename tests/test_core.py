@@ -6,7 +6,7 @@ import numpy as np
 
 from bit2vid.config import VideoSettings
 from bit2vid.crypto import decrypt_payload, encrypt_payload
-from bit2vid.ecc import ReedSolomonLayer, _ECC_HEADER_STRUCT
+from bit2vid.ecc import _ECC_HEADER_STRUCT, ReedSolomonLayer
 from bit2vid.transport import (
     bits_to_bytes,
     bits_to_frames,
