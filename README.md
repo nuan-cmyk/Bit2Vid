@@ -655,13 +655,4 @@ A: Theoretically unlimited. Limited only by available RAM and disk space. Tested
 
 ---
 
-## Support
-
-- 📖 [Full Documentation](https://github.com/bit2vid/bit2vid#readme)
-- 🐛 [Issue Tracker](https://github.com/bit2vid/bit2vid/issues)
-- 💬 [Discussions](https://github.com/bit2vid/bit2vid/discussions)
-- 📧 Email: maintainers@bit2vid.dev
-
----
-
 **Made with ❤️ for digital archivists and security researchers.**
